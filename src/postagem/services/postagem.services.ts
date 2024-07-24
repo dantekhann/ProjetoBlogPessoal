@@ -2,24 +2,33 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, ILike, Repository } from 'typeorm';
 import { Postagem } from '../entities/postagem.entity';
+import { TemaService } from '../../tema/services/tema.services';
 
 @Injectable()
 export class PostagemService {
   constructor(
     @InjectRepository(Postagem)
     private postagemRepository: Repository<Postagem>,
+    private TemaService: TemaService,
   ) {}
 
   async findAll(): Promise<Postagem[]> {
     //SELECT * FROM tb_postagens
-    return await this.postagemRepository.find();
+    return await this.postagemRepository.find({
+      relations: {
+        tema: true,
+      },
+    });
   }
 
   async findById(id: number): Promise<Postagem> {
     //criou no services, tem que criar na controller
     let buscaPostagem = await this.postagemRepository.findOne({
       where: {
-        id,
+        id
+      },
+      relations: {
+        tema: true
       },
     });
     if (!buscaPostagem)
@@ -37,11 +46,20 @@ export class PostagemService {
       where: {
         titulo: ILike(`%${titulo}%`),
       },
+      relations: {
+        tema: true,
+      },
     });
   }
 
   async create(postagem: Postagem): Promise<Postagem> {
     //criou no services, tem que criar na controller
+    if (postagem.tema) {
+      let tema = await this.TemaService.findById(postagem.tema.id);
+      if (!tema)
+        throw new HttpException('Tema não encontrado', HttpStatus.NOT_FOUND);
+      return await this.postagemRepository.save(postagem);
+    }
     return await this.postagemRepository.save(postagem);
   }
 
@@ -53,6 +71,12 @@ export class PostagemService {
         'A Postagem não foi encontrada!',
         HttpStatus.NOT_FOUND,
       );
+    if (postagem.tema) {
+      let tema = await this.TemaService.findById(postagem.tema.id);
+      if (!tema)
+        throw new HttpException('Tema não encontrado', HttpStatus.NOT_FOUND);
+      return await this.postagemRepository.save(postagem);
+    }
     return await this.postagemRepository.save(postagem);
   }
 
@@ -66,5 +90,4 @@ export class PostagemService {
       );
     return await this.postagemRepository.delete(id);
   }
-  
 }
