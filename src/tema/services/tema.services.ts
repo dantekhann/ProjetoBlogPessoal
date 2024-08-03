@@ -22,10 +22,10 @@ export class TemaService {
     //criou no services, tem que criar na controller
     let tema = await this.temaRepository.findOne({
       where: {
-        id
+        id,
       },
       relations: {
-        postagem: true
+        postagem: true,
       },
     });
     if (!Tema)

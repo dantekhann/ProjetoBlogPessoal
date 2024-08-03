@@ -17,6 +17,7 @@ export class PostagemService {
     return await this.postagemRepository.find({
       relations: {
         tema: true,
+        usuario: true,
       },
     });
   }
@@ -25,10 +26,11 @@ export class PostagemService {
     //criou no services, tem que criar na controller
     let buscaPostagem = await this.postagemRepository.findOne({
       where: {
-        id
+        id,
       },
       relations: {
-        tema: true
+        tema: true,
+        usuario: true,
       },
     });
     if (!buscaPostagem)
@@ -48,6 +50,7 @@ export class PostagemService {
       },
       relations: {
         tema: true,
+        usuario: true,
       },
     });
   }
