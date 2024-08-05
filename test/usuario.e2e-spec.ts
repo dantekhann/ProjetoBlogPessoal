@@ -97,4 +97,13 @@ it("05 - Deve Atualizar os Dados do Usuário", async() => {
 
 })
 
+it("06 - Deve Listar apenas um Usuário pelo id", async () => {
+  return request(app.getHttpServer())
+  .get(`/usuarios/${usuarioId}`)
+  .set('Authorization', `${token}`)
+  .send({})
+  .expect(200)
+  
+})
+
 });
