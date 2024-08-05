@@ -5,8 +5,8 @@ import { PostagemModule } from './postagem/postagem.module';
 import { Tema } from './tema/entities/tema.entity';
 import { TemaModule } from './tema/tema.module';
 import { AuthModule } from './auth/auth.module';
-import { UsuarioModule } from './auth/usuario/usuario.module';
-import { Usuario } from './auth/usuario/entities/usuario.entity';
+import { UsuarioModule } from './usuario/usuario.module';
+import { Usuario } from './usuario/entities/usuario.entity';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { Usuario } from './auth/usuario/entities/usuario.entity';
       database: 'db_blogpessoal',
       entities: [Postagem, Tema, Usuario],
       synchronize: true,
-      logging: true,
+      // logging: true,
     }),
     PostagemModule,
     TemaModule,
@@ -29,5 +29,5 @@ import { Usuario } from './auth/usuario/entities/usuario.entity';
   controllers: [],
   providers: [],
 })
-//ESSAS LINHAS CONECTAM O BANCO COM AS TABELAS
+
 export class AppModule {}

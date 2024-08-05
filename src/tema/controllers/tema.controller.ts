@@ -1,12 +1,25 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
-import { Tema } from "../entities/tema.entity";
-import { TemaService } from "../services/tema.services";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { Tema } from '../entities/tema.entity';
+import { TemaService } from '../services/tema.services';
 
 @UseGuards(JwtAuthGuard)
-@Controller("/temas")
+@Controller('/temas')
 export class TemaController {
-  constructor(private readonly temaService: TemaService) { }
+  constructor(private readonly temaService: TemaService) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -40,8 +53,7 @@ export class TemaController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param('id', ParseIntPipe) id: number){
+  delete(@Param('id', ParseIntPipe) id: number) {
     return this.temaService.delete(id);
   }
-
 }
