@@ -1,24 +1,14 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import Footer from "../components/footer/Footer"
-import Navbar from "../components/navbar/Navbar"
 import Home from "./pages/home/Home"
 
 function App() {
-  // Código TypeScript
+//código typescript
 
   return (
-    // Código TSX => HTML + CSS
+    //código tsx = html + css
     <>
-      <BrowserRouter>
-        <Navbar />
-        <div className="min-h-[80vh]">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-          </Routes>
-        </div>
-        <Footer />
-      </BrowserRouter>
+    {/* <h1>Turma Javascript 05</h1>
+    <h2>React é divertido!</h2>*/}
+    <Home />
     </>
   )
 }
