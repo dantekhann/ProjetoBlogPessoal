@@ -9,7 +9,7 @@ import Home from './pages/home/Home';
 import { AuthProvider } from './contexts/AuthContext';
 import ListaTemas from './components/temas/listatemas/ListaTemas';
 import DeletarTema from './components/temas/deletartemas/DeletarTemas';
-import FormularioTema from './components/temas/formulariotemas/FormularioTemas';
+import FormularioTema from './components/temas/formtema/FormTema';
 
 
 function App() {

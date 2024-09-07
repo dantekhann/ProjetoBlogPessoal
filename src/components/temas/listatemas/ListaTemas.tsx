@@ -1,15 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
-import { DNA } from 'react-loader-spinner';
+import  { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../../contexts/AuthContext';
 import Tema from '../../../models/Tema';
-import { buscar } from '../../../pages/services/Service'
 import CardTemas from '../cardtemas/CardTemas';
+import AuthContext from '../../contexts/AuthContex';
+import { buscar } from "../../../services/Service";
+import { DNA } from 'react-loader-spinner';
+import { ToastAlerta } from '../../../utils/ToastAlerta';
 
 function ListaTemas() {
   const [temas, setTemas] = useState<Tema[]>([]);
 
-  const navigate = useNavigate();
+  let navigate = useNavigate();
 
   const { usuario, handleLogout } = useContext(AuthContext);
   const token = usuario.token;
@@ -21,6 +22,7 @@ function ListaTemas() {
       });
     } catch (error: any) {
       if (error.toString().includes('401')) {
+        ToastAlerta('O token expirou, favor logar novamente', 'info')
         handleLogout()
       }
     }
@@ -28,8 +30,8 @@ function ListaTemas() {
 
   useEffect(() => {
     if (token === '') {
-      alert('Você precisa estar logado');
-      navigate('/');
+      ToastAlerta('Você precisa estar logado' , 'info');
+      navigate('/login');
     }
   }, [token]);
 
@@ -52,7 +54,9 @@ function ListaTemas() {
         <div className="container flex flex-col">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {temas.map((tema) => (
+              <>
                 <CardTemas key={tema.id} tema={tema} />
+              </>
             ))}
           </div>
         </div>
@@ -61,4 +65,4 @@ function ListaTemas() {
   );
 }
 
-export default ListaTemas;
+export default ListaTemas;

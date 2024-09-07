@@ -1,8 +1,10 @@
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../../../contexts/AuthContext';
 import Tema from '../../../models/Tema';
-import { atualizar, buscar, cadastrar } from '../../../pages/services/Service'
+import AuthContext from '../../contexts/AuthContex';
+import { atualizar, buscar, cadastrar } from "../../../services/Service";
+import { RotatingLines } from 'react-loader-spinner';
+import { ToastAlerta } from '../../../utils/ToastAlerta';
 
 function FormularioTema() {
   const [tema, setTema] = useState<Tema>({} as Tema);
@@ -11,8 +13,10 @@ function FormularioTema() {
 
   const { id } = useParams<{ id: string }>();
 
-  const { usuario, handleLogout } = useContext(AuthContext);
+  const { usuario, handleLogout } = useContext(AuthContext)
   const token = usuario.token;
+
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   async function buscarPorId(id: string) {
     await buscar(`/temas/${id}`, setTema, {
@@ -39,24 +43,23 @@ function FormularioTema() {
 
   async function gerarNovoTema(e: ChangeEvent<HTMLFormElement>) {
     e.preventDefault()
+    setIsLoading(true)
 
     if (id !== undefined) {
       try {
         await atualizar(`/temas`, tema, setTema, {
-          headers: {
-            'Authorization': token
-          }
+          headers: {'Authorization': token }
         })
 
-        alert('Tema atualizado com sucesso')
-        retornar()
+        ToastAlerta('Tema atualizado com sucesso', 'sucesso')
+        
 
       } catch (error: any) {
         if (error.toString().includes('403')) {
-          alert('O token expirou, favor logar novamente')
+          ToastAlerta('O token expirou, favor logar novamente', 'info')
           handleLogout()
         } else {
-          alert('Erro ao atualizar o Tema')
+          ToastAlerta('Erro ao atualizar o Tema', 'erro')
         }
 
       }
@@ -64,23 +67,21 @@ function FormularioTema() {
     } else {
       try {
         await cadastrar(`/temas`, tema, setTema, {
-          headers: {
-            'Authorization': token
-          }
+          headers: {'Authorization': token}
         })
 
-        alert('Tema cadastrado com sucesso')
+        ToastAlerta('Tema cadastrado com sucesso', 'sucesso')
 
       } catch (error: any) {
         if (error.toString().includes('403')) {
-          alert('O token expirou, favor logar novamente')
+          ToastAlerta('O token expirou, favor logar novamente' , 'info')
           handleLogout()
         } else {
-          alert('Erro ao cadastrado o Tema')
+          ToastAlerta('Erro ao cadastrado o Tema', 'erro')
         }
       }
     }
-
+    setIsLoading(false)
     retornar()
   }
 
@@ -89,8 +90,7 @@ function FormularioTema() {
   }
 
   useEffect(() => {
-    if (token === '') {
-      alert('Você precisa estar logado');
+    if (token === '') {ToastAlerta('Você precisa estar logado', 'info');
       navigate('/login');
     }
   }, [token]);
@@ -117,7 +117,15 @@ function FormularioTema() {
           className="rounded text-slate-100 bg-indigo-400 hover:bg-indigo-800 w-1/2 py-2 mx-auto block"
           type="submit"
         >
-          {id === undefined ? 'Cadastrar' : 'Editar'}
+          {isLoading ? <RotatingLines
+                        strokeColor="white"
+                        strokeWidth="5"
+                        animationDuration="0.75"
+                        width="24"
+                        visible={true}
+                    /> :
+                        <span>{id === undefined ? 'Cadastrar' : 'Atualizar'}</span>
+                    }
         </button>
       </form>
     </div>
